@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Modules\Notes\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class StoreNoteRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return true;
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if (is_string($this->input('title'))) {
+            $this->merge(['title' => trim($this->input('title'))]);
+        }
+    }
+
+    /**
+     * @return array{title: list<string>}
+     */
+    public function rules(): array
+    {
+        return [
+            'title' => ['required', 'string', 'max:200'],
+        ];
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function messages(): array
+    {
+        return [
+            'title.required' => 'Give your note a title.',
+            'title.string' => 'Your note title must be text.',
+            'title.max' => 'Keep your note title to 200 characters or fewer.',
+        ];
+    }
+}

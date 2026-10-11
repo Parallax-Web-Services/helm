@@ -1,9 +1,83 @@
 @import 'tailwindcss';
 
+@source '../js';
+@source '../../packages/zefram-js/src';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', 'Inter Display', ui-sans-serif, system-ui, sans-serif;
+    --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
+    --color-brand: #a567ff;
+    --color-brand-light: #cba2ff;
+    --color-brand-border: #63429c;
+    --color-surface: #11101a;
+    --color-surface-raised: #15121d;
+    --color-ink: #f5f3fa;
+    --color-muted: #a5a2b6;
+    --color-dim: #8a829a;
+    --color-content: #f5f3fa;
+    --color-content-muted: #a5a2b6;
+    --color-hair: rgba(173, 151, 211, .16);
+}
+
+:root {
+    color-scheme: dark;
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    --brand-gradient: linear-gradient(111deg, #8739e9, #a454e6 55%, #b85ec8);
+}
+
+body {
+    margin: 0;
+    background: #090810;
+    color: var(--color-ink);
+}
+
+.brand-button {
+    background: var(--brand-gradient);
+    box-shadow: 0 8px 24px rgba(133, 57, 225, .18);
+}
+
+.brand-button:hover:not(:disabled) {
+    filter: brightness(1.08);
+}
+
+button, a, input, textarea, select {
+    -webkit-tap-highlight-color: transparent;
+}
+
+button:not(:disabled) {
+    cursor: pointer;
+}
+
+textarea {
+    tab-size: 2;
+}
+
+::selection {
+    background: #a567ff;
+    color: white;
+}
+
+::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #38304b;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+    }
 }

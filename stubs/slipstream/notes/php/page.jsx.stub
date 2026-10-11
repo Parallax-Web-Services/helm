@@ -1,0 +1,32 @@
+import React, { useState } from 'react';
+import { Head, router } from '@inertiajs/react';
+import NotesApp from '../Modules/{{ name }}/NotesApp.jsx';
+
+export default function {{ name }}({ notes = [], storeUrl }) {
+    const [error, setError] = useState(null);
+
+    function saveNote(title) {
+        return new Promise((resolve) => {
+            router.post(storeUrl, { title }, {
+                preserveScroll: true,
+                onSuccess: () => {
+                    setError(null);
+                    resolve(true);
+                },
+                onError: (errors) => {
+                    setError(errors.title || 'Your note could not be saved.');
+                    resolve(false);
+                },
+                onCancel: () => resolve(false),
+                onFinish: () => resolve(false),
+            });
+        });
+    }
+
+    return (
+        <main className="mx-auto max-w-xl px-6 py-16">
+            <Head title="{{ name }}" />
+            <NotesApp appName="{{ name }}" notes={notes} onSave={saveNote} error={error} />
+        </main>
+    );
+}

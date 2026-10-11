@@ -3,11 +3,14 @@
     "private": true,
     "type": "module",
     "scripts": {
-        "build": "vite build",
-        "dev": "vite"
+        "build": "vite build && vite build --config vite.browser.config.js && vite build --config vite.preview.config.js && node scripts/copy-preview.js",
+        "dev": "vite",
+        "test:js": "node --test packages/zefram-js/tests/runtime.test.js resources/js/Modules/Notes/tests/browser.test.js resources/js/tests/slipstream-kit.test.js",
+        "serve:js": "vite preview --config vite.browser.config.js --host 127.0.0.1 --port 4173"
     },
     "devDependencies": {
         "@tailwindcss/vite": "^4.0.0",
+        "@vitejs/plugin-react": "^6.1.2",
         "concurrently": "^10.0.3",
         "laravel-vite-plugin": "^3.1",
         "tailwindcss": "^4.0.0",
@@ -15,5 +18,11 @@
     },
     "optionalDependencies": {
         "@laravel/multiplex": "^0.4.1"
+    },
+    "dependencies": {
+        "@inertiajs/react": "^3.9.1",
+        "react": "^19.3.0",
+        "react-dom": "^19.3.0",
+        "sucrase": "^3.35.1"
     }
 }

@@ -1,0 +1,9 @@
+<?php
+
+use App\Modules\{{ name }}\Http\Controllers\NotesController;
+use Illuminate\Support\Facades\Route;
+
+Route::middleware('web')->group(function (): void {
+    Route::get('/{{ slug }}', [NotesController::class, 'index'])->name('{{ slug }}.index');
+    Route::post('/{{ slug }}/notes', [NotesController::class, 'store'])->name('{{ slug }}.notes.store');
+});

@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Modules\{{ name }}\Models;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Model;
+
+#[Fillable(['session_id', 'title'])]
+#[Hidden(['session_id'])]
+class Note extends Model
+{
+    protected $table = '{{ table }}';
+}

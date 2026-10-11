@@ -1,0 +1,22 @@
+import { createNotesStore } from '../../../../packages/zefram-js/src/index.js';
+
+export function createBrowserNotes({ storage, key = 'zefram.modules.{{ slug }}.notes' }) {
+    const store = createNotesStore({ storage, key });
+    let notes = [];
+
+    return {
+        all() {
+            notes = store.all();
+            return notes;
+        },
+        async save(title) {
+            try {
+                store.add(title);
+                notes = store.all();
+                return { notes, error: null };
+            } catch (error) {
+                return { notes, error: error.message || 'Your note could not be saved.' };
+            }
+        },
+    };
+}

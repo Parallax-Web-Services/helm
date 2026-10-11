@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Modules\Notes;
+
+use App\Modules\Notes\Models\Note;
+
+class Notes
+{
+    /**
+     * @return list<array{id: int, title: string, createdAt: string}>
+     */
+    public function allForSession(string $sessionId): array
+    {
+        return Note::query()
+            ->where('session_id', $sessionId)
+            ->orderBy('id')
+            ->get(['id', 'title', 'created_at'])
+            ->map(fn (Note $note): array => [
+                'id' => $note->id,
+                'title' => $note->title,
+                'createdAt' => $note->created_at->toISOString(),
+            ])
+            ->all();
+    }
+
+    public function addForSession(string $sessionId, string $title): Note
+    {
+        return Note::query()->create([
+            'session_id' => $sessionId,
+            'title' => $title,
+        ]);
+    }
+}

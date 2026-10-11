@@ -1,0 +1,38 @@
+import React, { useState } from 'react';
+import { Button, Card, Input } from '../../Components/Slipstream.jsx';
+
+export default function NotesApp({ notes = [], onSave, error, appName = 'My notes' }) {
+    const [title, setTitle] = useState('');
+    const [saving, setSaving] = useState(false);
+
+    async function saveNote(event) {
+        event.preventDefault();
+        setSaving(true);
+
+        try {
+            if (await onSave(title)) {
+                setTitle('');
+            }
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    return (
+        <div className="space-y-6">
+            <header>
+                <h1 className="text-3xl font-semibold text-ink">{appName}</h1>
+                <p className="mt-2 text-sm text-muted">{notes.length} saved notes</p>
+            </header>
+            <form onSubmit={saveNote} className="space-y-3">
+                <label htmlFor="note-title" className="block text-sm font-medium text-ink">Note title</label>
+                <Input id="note-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="An idea worth keeping" />
+                {error && <p role="alert" className="text-sm text-rose-300">{error}</p>}
+                <Button type="submit" disabled={saving}>{saving ? 'Saving…' : 'Save note'}</Button>
+            </form>
+            <div className="space-y-3">
+                {notes.map((note) => <Card key={note.id}><p className="text-ink">{note.title}</p></Card>)}
+            </div>
+        </div>
+    );
+}

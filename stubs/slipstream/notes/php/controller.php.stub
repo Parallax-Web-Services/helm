@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Modules\{{ name }}\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use App\Modules\{{ name }}\Http\Requests\StoreNoteRequest;
+use App\Modules\{{ name }}\Notes;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Inertia\Inertia;
+use Inertia\Response;
+
+class NotesController extends Controller
+{
+    public function index(Request $request, Notes $notes): Response
+    {
+        return Inertia::render('{{ name }}', [
+            'notes' => $notes->allForSession($request->session()->getId()),
+            'storeUrl' => route('{{ slug }}.notes.store'),
+        ]);
+    }
+
+    public function store(StoreNoteRequest $request, Notes $notes): RedirectResponse
+    {
+        $notes->addForSession($request->session()->getId(), $request->validated('title'));
+
+        return to_route('{{ slug }}.index');
+    }
+}

@@ -1,0 +1,37 @@
+import React, { useState } from 'react';
+import { Head } from '@inertiajs/react';
+import NotesApp from '../Modules/{{ name }}/NotesApp.jsx';
+import { createBrowserNotes } from '../Modules/{{ name }}/browser.js';
+
+function openBrowserNotes() {
+    try {
+        const service = createBrowserNotes({ storage: window.localStorage });
+        return { service, notes: service.all(), error: null };
+    } catch {
+        return { service: null, notes: [], error: 'Browser storage is unavailable. Enable storage to save your notes.' };
+    }
+}
+
+export default function {{ name }}() {
+    const [browser] = useState(openBrowserNotes);
+    const [notes, setNotes] = useState(browser.notes);
+    const [error, setError] = useState(browser.error);
+
+    async function saveNote(title) {
+        if (!browser.service) {
+            return false;
+        }
+
+        const result = await browser.service.save(title);
+        setNotes(result.notes);
+        setError(result.error);
+        return !result.error;
+    }
+
+    return (
+        <main className="mx-auto max-w-xl px-6 py-16">
+            <Head title="{{ name }}" />
+            <NotesApp appName="{{ name }}" notes={notes} onSave={saveNote} error={error} />
+        </main>
+    );
+}
