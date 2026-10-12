@@ -22,6 +22,7 @@ The current MVP includes:
 - **Maiden Voyage**: a guided Notes application with editable code and a live preview. Name your app, connect its Save button, and display saved notes.
 - **JS and PHP editions**: browser storage for the JS edition, or session-scoped database storage for the PHP edition.
 - **A reusable Notes module**: its PHP source, routes, database files, and React screen live together in `modules/notes`, with its own `Notes\` namespace.
+- **SLIPSTREAM CLI**: included by default through `parallax/cli`; use the project command to scaffold editable kits.
 - **SLIPSTREAM kits**: copy the Notes feature into your own module, then edit the generated files.
 - **Local documentation** for getting started, modules, and kits.
 - **LARAVEL BOOST** for working with AI coding agents.
@@ -55,7 +56,7 @@ Notes stay in the same browser and site using browser storage. This preview does
 
 You’ll need:
 
-- **PHP 8.3 or newer**, with the extensions required by COMPOSER and SQLite support.
+- **PHP 8.4 or newer**, with the extensions required by COMPOSER and SQLite support.
 - **COMPOSER**.
 - **NODE.JS 24** and **NPM**.
 - **GIT** to clone the source.
@@ -64,10 +65,13 @@ From a fresh checkout:
 
 ```sh
 composer run setup
+export PATH="$PWD:$PATH"
 php artisan serve
 ```
 
 The setup script installs PHP and frontend dependencies, creates `.env` when missing, generates the application key, prepares the configured database, and builds the frontend. The default local database is SQLite.
+
+SLIPSTREAM CLI is installed by default through `parallax/cli`. On Linux or WSL, run the PATH command from your project directory once per shell to select this checkout’s `slipstream` executable. You can also invoke `./slipstream` directly from the checkout. ARTISAN remains available for ordinary LARAVEL commands.
 
 Open the address printed by ARTISAN, usually [http://127.0.0.1:8000](http://127.0.0.1:8000). Choose JS or PHP in Maiden Voyage. The PHP edition saves notes in the database for the current browser session.
 
@@ -93,18 +97,24 @@ On the LARAVEL server:
 
 ## Make your first module
 
-The first SLIPSTREAM kit is Notes. Run the generator from the full ZEFRAM application, including for the JS edition.
+The first SLIPSTREAM kit is Notes. Run the generator from the full ZEFRAM application with PHP 8.4 or newer, including for the JS edition.
+
+On Linux or WSL, select this project’s CLI once per shell from the project directory:
+
+```sh
+export PATH="$PWD:$PATH"
+```
 
 For browser storage:
 
 ```sh
-php artisan slipstream:kit notes Ideas --edition=js
+slipstream kit notes Ideas --edition=js
 ```
 
 For database storage, use the PHP edition instead:
 
 ```sh
-php artisan slipstream:kit notes Ideas --edition=php
+slipstream kit notes Ideas --edition=php
 ```
 
 Choose one edition for a given module name. The generator refuses existing module names and files.

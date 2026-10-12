@@ -43,7 +43,7 @@ export function createKitPlan(name = 'Ideas', edition = 'js') {
         name,
         edition,
         slug,
-        command: `php artisan slipstream:kit notes ${name} --edition=${edition}`,
+        command: `slipstream kit notes ${name} --edition=${edition}`,
         providerLine: `${name}\\Providers\\${name}ServiceProvider::class,`,
         autoloadLine: `"${name}\\\\": "${modulePath}/src/",`,
         autoloadCommand: 'composer dump-autoload',

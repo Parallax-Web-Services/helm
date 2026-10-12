@@ -41,7 +41,11 @@ export default function KitSetup({ name = 'Ideas', edition = 'js', standalone = 
         <div>
             <p className="text-base leading-7 text-muted">Copy the Notes kit into a new module, then edit the generated files. Run the commands below in your Zefram project directory.</p>
             <p className="mt-2 text-sm leading-6 text-muted">The kit starts with a working notes app. Your Maiden Voyage edits are not transferred automatically; you can keep them using the component download.</p>
-            {standalone && <p className="mt-4 rounded-lg border border-brand-border/45 bg-brand/5 px-4 py-3 text-sm leading-6 text-muted">This is the browser preview. Kit scaffolding requires the Zefram PHP project and Artisan, including for the JS edition. Its React component can also be used in another React app.</p>}
+            {standalone && <p className="mt-4 rounded-lg border border-brand-border/45 bg-brand/5 px-4 py-3 text-sm leading-6 text-muted">This is the browser preview. Kit scaffolding requires the full Zefram project with PHP 8.4 or later and its included Slipstream CLI, including for the JS edition. Its React component can also be used in another React app.</p>}
+
+            <p className="mt-4 text-sm leading-6 text-muted">On Linux or WSL, add this project directory to your shell's command path once per shell. This selects the project's Slipstream command:</p>
+            <CodeBlock label="Slipstream shell setup" code={'export PATH="$PWD:$PATH"'} />
+            <p className="text-sm leading-6 text-muted">The CLI comes with Zefram through <code className="text-ink">parallax/cli</code>. You can also use <code className="text-ink">./slipstream</code> directly from this checkout.</p>
 
             <form className="my-6 grid gap-4 rounded-lg border border-brand-border/40 bg-surface-raised p-5 sm:grid-cols-2" onSubmit={(event) => event.preventDefault()}>
                 <div>
@@ -64,7 +68,7 @@ export default function KitSetup({ name = 'Ideas', edition = 'js', standalone = 
                 <li>
                     <h2 className="text-xl font-semibold text-ink">1. Scaffold {plan.name}</h2>
                     <CodeBlock label="Scaffold command" code={plan.command} />
-                    <p className="text-sm leading-6 text-muted">Expected result: Artisan lists the files it created and prints your setup steps. It refuses existing module names and files. Choose another name if it reports a conflict.</p>
+                    <p className="text-sm leading-6 text-muted">Expected result: Slipstream lists the files it created and prints your setup steps. It refuses existing module names and files. Choose another name if it reports a conflict.</p>
                     <details className="mt-3">
                         <summary className="cursor-pointer rounded text-sm text-brand-light focus-visible:outline-2 focus-visible:outline-brand-light">Files this kit creates</summary>
                         <ul className="mt-3 space-y-2">

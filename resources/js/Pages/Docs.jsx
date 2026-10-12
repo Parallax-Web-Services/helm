@@ -31,7 +31,7 @@ function GettingStarted({ edition, tourUrl, nextUrl }) {
             <p className="leading-7 text-muted">
                 {edition === 'js'
                     ? 'For the browser preview, use Node.js 24 with npm. The preview runs entirely in your browser and saves notes in browser storage.'
-                    : 'For the PHP app, you need PHP 8.3 or later with the SQLite extension, Composer, and Node.js 24 with npm. Notes are saved in SQLite for your browser session.'}
+                    : 'For the PHP app, you need PHP 8.4 or later with the SQLite extension, Composer, and Node.js 24 with npm. Notes are saved in SQLite for your browser session.'}
             </p>
             <SectionHeading id="run">Run it</SectionHeading>
             <p className="leading-7 text-muted">Open a terminal in your Zefram checkout.</p>
@@ -44,9 +44,15 @@ function GettingStarted({ edition, tourUrl, nextUrl }) {
                 </>
             ) : (
                 <>
-                    <CodeExample label="Terminal">{'composer run setup\nphp artisan serve'}</CodeExample>
+                    <CodeExample label="Terminal">{'composer run setup\nexport PATH="$PWD:$PATH"\nphp artisan serve'}</CodeExample>
                     <p className="leading-7 text-muted">
                         Use setup once in a fresh checkout: it installs dependencies, creates your local environment, prepares SQLite, and builds the frontend. If your app is already set up, run only the server command. Open the address printed by Artisan, usually <code className="font-mono text-sm text-ink">http://127.0.0.1:8000/</code>, then choose PHP in Maiden Voyage.
+                    </p>
+                    <p className="mt-4 leading-7 text-muted">
+                        Slipstream is included by default through <code className="font-mono text-sm text-ink">parallax/cli</code>.
+                        On Linux or WSL, the PATH command selects this checkout's Slipstream executable for the current shell.
+                        Run it again in each new shell from the project directory, or use <code className="font-mono text-sm text-ink">./slipstream</code> directly.
+                        Artisan remains available for ordinary Laravel commands.
                     </p>
                 </>
             )}
@@ -177,8 +183,8 @@ function SlipstreamKits({ edition, moduleName, standalone, tourUrl }) {
             </p>
             <SectionHeading id="requirements">Before you generate</SectionHeading>
             <p className="leading-7 text-muted">
-                Run the generator from a Zefram checkout set up with PHP 8.3 or later, Composer, and Node.js 24 with npm.
-                Both kit editions currently use Artisan and the Laravel/Inertia app to serve their page.
+                Run the generator from a Zefram checkout set up with PHP 8.4 or later, Composer, and Node.js 24 with npm.
+                Both kit editions use the included Slipstream CLI and the Laravel/Inertia app to serve their page.
                 The standalone browser preview is for Maiden Voyage; it does not install a generated kit.
             </p>
             <SectionHeading id="generate">Name it, scaffold it, run it</SectionHeading>

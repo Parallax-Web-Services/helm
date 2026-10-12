@@ -6,7 +6,7 @@ test('a JS kit plan keeps its source in one root module and registers its namesp
     const plan = createKitPlan('Ideas', 'js');
 
     assert.equal(plan.error, null);
-    assert.equal(plan.command, 'php artisan slipstream:kit notes Ideas --edition=js');
+    assert.equal(plan.command, 'slipstream kit notes Ideas --edition=js');
     assert.equal(plan.providerLine, 'Ideas\\Providers\\IdeasServiceProvider::class,');
     assert.equal(plan.autoloadLine, '"Ideas\\\\": "modules/ideas/src/",');
     assert.equal(plan.autoloadCommand, 'composer dump-autoload');
@@ -24,7 +24,7 @@ test('a JS kit plan keeps its source in one root module and registers its namesp
 test('a PHP kit plan includes the database files and migration before building', () => {
     const plan = createKitPlan('Journal', 'php');
 
-    assert.equal(plan.command, 'php artisan slipstream:kit notes Journal --edition=php');
+    assert.equal(plan.command, 'slipstream kit notes Journal --edition=php');
     assert.equal(plan.migrationCommand, 'php artisan migrate');
     assert.equal(plan.visitPath, '/journal');
     assert.ok(plan.files.includes('modules/journal/src/Models/Note.php'));

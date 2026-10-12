@@ -8,10 +8,12 @@ use Illuminate\Support\Str;
 
 class SlipstreamKit extends Command
 {
-    protected $signature = 'slipstream:kit
+    protected $signature = 'kit
         {kit : The kit to copy (notes)}
         {name : A PascalCase module name, such as Ideas}
         {--edition=js : Store notes in the browser (js) or the database (php)}';
+
+    protected $aliases = ['slipstream:kit'];
 
     protected $description = 'Copy an editable Notes feature, Inertia page and module provider into your app';
 

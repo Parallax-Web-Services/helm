@@ -6,10 +6,11 @@
     "keywords": ["laravel", "framework"],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": "^8.4",
         "inertiajs/inertia-laravel": "^3.5",
         "laravel/framework": "^13.17",
-        "laravel/tinker": "^3.0"
+        "laravel/tinker": "^3.0",
+        "parallax/cli": "dev-master"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -27,7 +28,10 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Notes\\": "modules/notes/src/"
-        }
+        },
+        "exclude-from-classmap": [
+            "/vendor/parallax/cli/app/"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -86,5 +90,12 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "repositories": [
+        {
+            "name": "parallax-cli",
+            "type": "vcs",
+            "url": "https://gitlab.com/parallax-web-services/cli.git"
+        }
+    ]
 }

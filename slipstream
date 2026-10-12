@@ -1,0 +1,22 @@
+#!/usr/bin/env php
+<?php
+
+use Illuminate\Foundation\Application;
+use Symfony\Component\Console\Input\ArgvInput;
+
+define('LARAVEL_START', microtime(true));
+
+$autoloadPath = __DIR__.'/vendor/autoload.php';
+
+if (! is_file($autoloadPath)) {
+    fwrite(STDERR, "Slipstream dependencies are missing. Run composer install in this project first.\n");
+
+    exit(1);
+}
+
+require $autoloadPath;
+
+/** @var Application $app */
+$app = require_once __DIR__.'/bootstrap/app.php';
+
+exit($app->handleCommand(new ArgvInput));
