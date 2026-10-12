@@ -1,7 +1,7 @@
 <?php
 
-use App\Modules\Notes\NotesServiceProvider;
 use App\Providers\AppServiceProvider;
+use Notes\Providers\NotesServiceProvider;
 
 return [
     AppServiceProvider::class,

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Modules\{{ name }};
+namespace {{ name }}\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -8,6 +8,6 @@ class {{ name }}ServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
-        $this->loadRoutesFrom(__DIR__.'/routes.php');
+        $this->loadRoutesFrom(dirname(__DIR__, 2).'/routes/web.php');
     }
 }

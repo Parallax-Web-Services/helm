@@ -75,9 +75,12 @@ export default function KitSetup({ name = 'Ideas', edition = 'js', standalone = 
                 </li>
                 <li>
                     <h2 className="text-xl font-semibold text-ink">2. Register the module</h2>
+                    <p className="mt-3 text-sm leading-6 text-muted">Open <code className="text-ink">composer.json</code>. Add this entry inside <code className="text-ink">autoload.psr-4</code>, keeping the existing mappings. Use commas between entries.</p>
+                    <CodeBlock label="Composer autoload entry" code={plan.autoloadLine} />
                     <p className="mt-3 text-sm leading-6 text-muted">Open <code className="text-ink">bootstrap/providers.php</code>. Add this entry inside its existing <code className="text-ink">return [ ... ];</code> array. Keep the existing providers.</p>
                     <CodeBlock label="Provider entry" code={plan.providerLine} />
-                    <p className="text-sm leading-6 text-muted">The provider loads your module's routes{kitEdition === 'php' ? ' and migrations' : ''}. This makes <code className="text-ink">{plan.visitPath}</code> available in your app.</p>
+                    <CodeBlock label="Autoload command" code={plan.autoloadCommand} />
+                    <p className="text-sm leading-6 text-muted">Composer now loads your module's namespace. The provider loads your module's routes{kitEdition === 'php' ? ' and migrations' : ''}. This makes <code className="text-ink">{plan.visitPath}</code> available in your app.</p>
                 </li>
                 <li>
                     <h2 className="text-xl font-semibold text-ink">3. Keep your edits</h2>

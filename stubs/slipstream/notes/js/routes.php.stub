@@ -4,5 +4,5 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::middleware('web')->group(function (): void {
-    Route::get('/{{ slug }}', fn () => Inertia::render('{{ name }}'))->name('{{ slug }}.index');
+    Route::get('/{{ slug }}', fn () => Inertia::render('{{ slug }}/{{ name }}'))->name('{{ slug }}.index');
 });

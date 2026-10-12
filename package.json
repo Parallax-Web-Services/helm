@@ -5,7 +5,7 @@
     "scripts": {
         "build": "vite build && vite build --config vite.browser.config.js && vite build --config vite.preview.config.js && node scripts/copy-preview.js",
         "dev": "vite",
-        "test:js": "node --test packages/zefram-js/tests/runtime.test.js resources/js/Modules/Notes/tests/browser.test.js resources/js/tests/slipstream-kit.test.js",
+        "test:js": "node --test packages/zefram-js/tests/runtime.test.js modules/notes/resources/js/tests/browser.test.js resources/js/tests/slipstream-kit.test.js",
         "serve:js": "vite preview --config vite.browser.config.js --host 127.0.0.1 --port 4173"
     },
     "devDependencies": {

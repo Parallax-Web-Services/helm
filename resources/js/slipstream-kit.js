@@ -12,25 +12,29 @@ export function createKitPlan(name = 'Ideas', edition = 'js') {
         return { error: 'Notes is already included. Choose a new module name, such as Ideas.' };
     }
 
+    if (['app', 'database', 'tests'].includes(name.toLowerCase())) {
+        return { error: 'That namespace is reserved. Choose a new module name, such as Ideas.' };
+    }
+
     const slug = name.replace(/(.)(?=[A-Z])/g, '$1-').toLowerCase();
-    const modulePath = `app/Modules/${name}`;
-    const componentPath = `resources/js/Modules/${name}/NotesApp.jsx`;
+    const modulePath = `modules/${slug}`;
+    const componentPath = `${modulePath}/resources/js/NotesApp.jsx`;
     const files = [
-        `${modulePath}/${name}ServiceProvider.php`,
-        `${modulePath}/routes.php`,
-        `resources/js/Pages/${name}.jsx`,
+        `${modulePath}/src/Providers/${name}ServiceProvider.php`,
+        `${modulePath}/routes/web.php`,
+        `${modulePath}/resources/js/Pages/${name}.jsx`,
         componentPath,
     ];
 
     if (edition === 'js') {
-        files.push(`resources/js/Modules/${name}/browser.js`);
+        files.push(`${modulePath}/resources/js/browser.js`);
     } else {
         files.push(
-            `${modulePath}/Models/Note.php`,
-            `${modulePath}/Notes.php`,
-            `${modulePath}/Http/Requests/StoreNoteRequest.php`,
-            `${modulePath}/Http/Controllers/NotesController.php`,
-            `${modulePath}/Database/Migrations/{timestamp}_create_${slug.replaceAll('-', '_')}_notes_table.php`,
+            `${modulePath}/src/Models/Note.php`,
+            `${modulePath}/src/Notes.php`,
+            `${modulePath}/src/Http/Requests/StoreNoteRequest.php`,
+            `${modulePath}/src/Http/Controllers/NotesController.php`,
+            `${modulePath}/database/migrations/{timestamp}_create_${slug.replaceAll('-', '_')}_notes_table.php`,
         );
     }
 
@@ -40,7 +44,9 @@ export function createKitPlan(name = 'Ideas', edition = 'js') {
         edition,
         slug,
         command: `php artisan slipstream:kit notes ${name} --edition=${edition}`,
-        providerLine: `App\\Modules\\${name}\\${name}ServiceProvider::class,`,
+        providerLine: `${name}\\Providers\\${name}ServiceProvider::class,`,
+        autoloadLine: `"${name}\\\\": "${modulePath}/src/",`,
+        autoloadCommand: 'composer dump-autoload',
         componentPath,
         files,
         migrationCommand: edition === 'php' ? 'php artisan migrate' : null,

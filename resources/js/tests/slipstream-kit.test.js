@@ -2,18 +2,23 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import { createKitPlan, docsUrl } from '../slipstream-kit.js';
 
-test('a JS kit plan uses browser storage and an additive provider entry', () => {
+test('a JS kit plan keeps its source in one root module and registers its namespace', () => {
     const plan = createKitPlan('Ideas', 'js');
 
     assert.equal(plan.error, null);
     assert.equal(plan.command, 'php artisan slipstream:kit notes Ideas --edition=js');
-    assert.equal(plan.providerLine, 'App\\Modules\\Ideas\\IdeasServiceProvider::class,');
-    assert.equal(plan.componentPath, 'resources/js/Modules/Ideas/NotesApp.jsx');
+    assert.equal(plan.providerLine, 'Ideas\\Providers\\IdeasServiceProvider::class,');
+    assert.equal(plan.autoloadLine, '"Ideas\\\\": "modules/ideas/src/",');
+    assert.equal(plan.autoloadCommand, 'composer dump-autoload');
+    assert.equal(plan.componentPath, 'modules/ideas/resources/js/NotesApp.jsx');
     assert.equal(plan.visitPath, '/ideas');
     assert.equal(plan.migrationCommand, null);
     assert.equal(plan.buildCommand, 'npm run build');
-    assert.ok(plan.files.includes('resources/js/Modules/Ideas/browser.js'));
-    assert.equal(plan.files.some((file) => file.includes('Database/')), false);
+    assert.ok(plan.files.includes('modules/ideas/resources/js/browser.js'));
+    assert.ok(plan.files.includes('modules/ideas/src/Providers/IdeasServiceProvider.php'));
+    assert.ok(plan.files.includes('modules/ideas/routes/web.php'));
+    assert.ok(plan.files.includes('modules/ideas/resources/js/Pages/Ideas.jsx'));
+    assert.equal(plan.files.some((file) => file.includes('/database/')), false);
 });
 
 test('a PHP kit plan includes the database files and migration before building', () => {
@@ -22,9 +27,9 @@ test('a PHP kit plan includes the database files and migration before building',
     assert.equal(plan.command, 'php artisan slipstream:kit notes Journal --edition=php');
     assert.equal(plan.migrationCommand, 'php artisan migrate');
     assert.equal(plan.visitPath, '/journal');
-    assert.ok(plan.files.includes('app/Modules/Journal/Models/Note.php'));
-    assert.ok(plan.files.includes('app/Modules/Journal/Http/Requests/StoreNoteRequest.php'));
-    assert.ok(plan.files.includes('app/Modules/Journal/Database/Migrations/{timestamp}_create_journal_notes_table.php'));
+    assert.ok(plan.files.includes('modules/journal/src/Models/Note.php'));
+    assert.ok(plan.files.includes('modules/journal/src/Http/Requests/StoreNoteRequest.php'));
+    assert.ok(plan.files.includes('modules/journal/database/migrations/{timestamp}_create_journal_notes_table.php'));
     assert.equal(plan.files.some((file) => file.endsWith('/browser.js')), false);
 });
 
@@ -42,8 +47,8 @@ test('module route slugs match Laravel kebab case for capitals and numbers', () 
     }
 });
 
-test('invalid names and the existing Notes module produce no runnable command', () => {
-    const invalid = ['', 'ideas', ' MyIdeas ', 'Ideas-List', 'Ideas_List', '1Ideas', 'Idées', '../Ideas', 'Ideas;echo hi', 'Ideas"$(id)', 'Ideas\n', 'Ideas\r', 'Ideas\r\n', 'Ideas\u2028', null, {}, 'Notes', 'NOTES'];
+test('invalid names and reserved module namespaces produce no runnable command', () => {
+    const invalid = ['', 'ideas', ' MyIdeas ', 'Ideas-List', 'Ideas_List', '1Ideas', 'Idées', '../Ideas', 'Ideas;echo hi', 'Ideas"$(id)', 'Ideas\n', 'Ideas\r', 'Ideas\r\n', 'Ideas\u2028', null, {}, 'Notes', 'NOTES', 'App', 'APP', 'Database', 'DATABASE', 'Tests', 'TESTS'];
 
     for (const name of invalid) {
         const plan = createKitPlan(name, 'js');
@@ -51,6 +56,8 @@ test('invalid names and the existing Notes module produce no runnable command', 
         assert.equal(typeof plan.error, 'string', String(name));
         assert.equal(plan.command, undefined, String(name));
         assert.equal(plan.providerLine, undefined, String(name));
+        assert.equal(plan.autoloadLine, undefined, String(name));
+        assert.equal(plan.autoloadCommand, undefined, String(name));
     }
 });
 

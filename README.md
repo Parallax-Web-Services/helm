@@ -21,7 +21,7 @@ The current MVP includes:
 - **LARAVEL 13** with **INERTIA 3**, **REACT 19**, **TAILWIND 4**, and **VITE 8**.
 - **Maiden Voyage**: a guided Notes application with editable code and a live preview. Name your app, connect its Save button, and display saved notes.
 - **JS and PHP editions**: browser storage for the JS edition, or session-scoped database storage for the PHP edition.
-- **A reusable Notes module**: its PHP routes and behavior live in `app/Modules/Notes`; its shared screen and browser behavior live in `resources/js/Modules/Notes`.
+- **A reusable Notes module**: its PHP source, routes, database files, and React screen live together in `modules/notes`, with its own `Notes\` namespace.
 - **SLIPSTREAM kits**: copy the Notes feature into your own module, then edit the generated files.
 - **Local documentation** for getting started, modules, and kits.
 - **LARAVEL BOOST** for working with AI coding agents.
@@ -109,10 +109,22 @@ php artisan slipstream:kit notes Ideas --edition=php
 
 Choose one edition for a given module name. The generator refuses existing module names and files.
 
+The kit lives in `modules/ideas`. Add this mapping inside `autoload.psr-4` in `composer.json`, keeping the existing mappings and valid JSON commas:
+
+```json
+"Ideas\\": "modules/ideas/src/",
+```
+
 Add this entry to the existing array in `bootstrap/providers.php`, keeping the other providers:
 
 ```php
-App\Modules\Ideas\IdeasServiceProvider::class,
+Ideas\Providers\IdeasServiceProvider::class,
+```
+
+Refresh Composer's autoload files after adding both entries:
+
+```sh
+composer dump-autoload
 ```
 
 For the PHP edition, run the migration:
@@ -127,9 +139,9 @@ Rebuild the frontend:
 npm run build
 ```
 
-With your LARAVEL server running, visit `/ideas`. Start editing `resources/js/Modules/Ideas/NotesApp.jsx`; the generated module’s source is yours to change.
+With your LARAVEL server running, visit `/ideas`. Start editing `modules/ideas/resources/js/NotesApp.jsx`; the generated module’s source is yours to change.
 
-Maiden Voyage edits are not transferred automatically into a generated kit. Download your edited component from the tour if you want to carry those changes over.
+Maiden Voyage edits are not transferred automatically into a generated kit. Download your edited component from the tour, then use its contents to replace `modules/ideas/resources/js/NotesApp.jsx` before building if you want to carry those changes over.
 
 ## One connected development cycle
 

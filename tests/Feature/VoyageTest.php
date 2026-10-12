@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Notes\Models\Note;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Notes\Models\Note;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 

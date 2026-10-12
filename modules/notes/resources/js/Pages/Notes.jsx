@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import NotesApp from '../Modules/Notes/NotesApp.jsx';
-import { createBrowserNotes } from '../Modules/Notes/browser.js';
-import zeframLockup from '../../images/zefram-lockup.png';
-import { docsUrl } from '../slipstream-kit.js';
+import NotesApp from '../NotesApp.jsx';
+import { createBrowserNotes } from '../browser.js';
+import zeframLockup from '../../../../../resources/images/zefram-lockup.png';
+import { docsUrl } from '../../../../../resources/js/slipstream-kit.js';
 
 function openBrowserNotes() {
     try {

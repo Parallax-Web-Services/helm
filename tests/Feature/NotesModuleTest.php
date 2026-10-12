@@ -2,9 +2,9 @@
 
 namespace Tests\Feature;
 
-use App\Modules\Notes\Models\Note;
 use Illuminate\Foundation\Testing\LazilyRefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
+use Notes\Models\Note;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
@@ -29,7 +29,7 @@ class NotesModuleTest extends TestCase
         $response = $this->get(route('notes.index'));
 
         $response->assertOk()->assertInertia(fn (Assert $page): Assert => $page
-            ->component('Notes', false)
+            ->component('notes/Notes', false)
             ->where('edition', 'js')
             ->where('notes', [])
         );
@@ -46,7 +46,7 @@ class NotesModuleTest extends TestCase
         $response = $this->get(route('notes.index', ['edition' => 'php']));
 
         $response->assertOk()->assertInertia(fn (Assert $page): Assert => $page
-            ->component('Notes', false)
+            ->component('notes/Notes', false)
             ->where('edition', 'php')
             ->where('notes', [
                 ['id' => $note->id, 'title' => 'My saved idea', 'createdAt' => '2026-10-11T12:00:00.000000Z'],

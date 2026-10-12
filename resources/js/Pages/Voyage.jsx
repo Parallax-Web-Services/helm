@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import { createBrowserNotes } from '../Modules/Notes/browser.js';
+import { createBrowserNotes } from '../../../modules/notes/resources/js/browser.js';
 import { Button, Input } from '../Components/Slipstream.jsx';
 import { createKitPlan, docsUrl } from '../slipstream-kit.js';
 import kitSource from '../Components/Slipstream.jsx?raw';

@@ -39,25 +39,32 @@ class SlipstreamKit extends Command
             return self::INVALID;
         }
 
-        foreach (['app/Modules', 'resources/js/Modules'] as $directory) {
-            foreach ($files->glob($this->laravel->basePath($directory).'/*') as $existing) {
-                if (strcasecmp(basename($existing), $name) === 0) {
-                    $this->error("A module named {$name} already exists (module names are case-insensitive).");
-                    $this->line('No files were written. Choose another module name.');
+        if (in_array(strtolower($name), ['app', 'database', 'tests'], true)) {
+            $this->error('Choose another module name. App, Database and Tests are reserved PHP namespaces.');
 
-                    return self::FAILURE;
-                }
-            }
+            return self::INVALID;
         }
 
         $slug = Str::kebab($name);
+
+        foreach ($files->glob($this->laravel->basePath('modules').'/*') as $existing) {
+            $directory = basename($existing);
+
+            if (strcasecmp($directory, $slug) === 0 || strcasecmp(str_replace('-', '', $directory), $name) === 0) {
+                $this->error("A module named {$name} already exists (module names are case-insensitive).");
+                $this->line('No files were written. Choose another module name.');
+
+                return self::FAILURE;
+            }
+        }
+
         $table = Str::snake($name).'_notes';
         $replacements = [
             '{{ name }}' => $name,
             '{{ slug }}' => $slug,
             '{{ table }}' => $table,
         ];
-        $blueprint = $this->blueprint($name, $table, $edition);
+        $blueprint = $this->blueprint($name, $slug, $table, $edition);
         $outputs = [];
 
         foreach ($blueprint as $target => $stub) {
@@ -85,16 +92,19 @@ class SlipstreamKit extends Command
 
         $this->newLine();
         $this->info("{$name} is yours to edit.");
-        $this->line("1. Add App\\Modules\\{$name}\\{$name}ServiceProvider::class to bootstrap/providers.php.");
+        $this->line('1. Add this mapping to composer.json under autoload.psr-4:');
+        $this->line('   "'.$name.'\\\\": "modules/'.$slug.'/src/",');
+        $this->line("2. Add {$name}\\Providers\\{$name}ServiceProvider::class to bootstrap/providers.php.");
+        $this->line('3. Run composer dump-autoload.');
+        $step = 4;
 
         if ($edition === 'php') {
-            $this->line('2. Run php artisan migrate.');
-            $this->line('3. Run npm run build.');
-            $this->line("4. Visit /{$slug}.");
-        } else {
-            $this->line('2. Run npm run build.');
-            $this->line("3. Visit /{$slug}. Notes stay in this browser.");
+            $this->line($step++.'. Run php artisan migrate.');
         }
+
+        $this->line($step++.'. Run npm run build.');
+        $this->line($step++.'. Run php artisan serve if your application is not already running.');
+        $this->line($step.'. Visit /'.$slug.'.'.($edition === 'js' ? ' Notes stay in this browser.' : ''));
 
         return self::SUCCESS;
     }
@@ -102,24 +112,24 @@ class SlipstreamKit extends Command
     /**
      * @return array<string, string>
      */
-    private function blueprint(string $name, string $table, string $edition): array
+    private function blueprint(string $name, string $slug, string $table, string $edition): array
     {
-        $module = 'app/Modules/'.$name;
+        $module = 'modules/'.$slug;
         $files = [
-            'resources/js/Modules/'.$name.'/NotesApp.jsx' => 'NotesApp.jsx.stub',
-            'resources/js/Pages/'.$name.'.jsx' => $edition.'/page.jsx.stub',
-            $module.'/'.$name.'ServiceProvider.php' => $edition.'/provider.php.stub',
-            $module.'/routes.php' => $edition.'/routes.php.stub',
+            $module.'/resources/js/NotesApp.jsx' => 'NotesApp.jsx.stub',
+            $module.'/resources/js/Pages/'.$name.'.jsx' => $edition.'/page.jsx.stub',
+            $module.'/src/Providers/'.$name.'ServiceProvider.php' => $edition.'/provider.php.stub',
+            $module.'/routes/web.php' => $edition.'/routes.php.stub',
         ];
 
         if ($edition === 'js') {
-            $files['resources/js/Modules/'.$name.'/browser.js'] = 'js/browser.js.stub';
+            $files[$module.'/resources/js/browser.js'] = 'js/browser.js.stub';
         } else {
-            $files[$module.'/Models/Note.php'] = 'php/model.php.stub';
-            $files[$module.'/Notes.php'] = 'php/service.php.stub';
-            $files[$module.'/Http/Requests/StoreNoteRequest.php'] = 'php/request.php.stub';
-            $files[$module.'/Http/Controllers/NotesController.php'] = 'php/controller.php.stub';
-            $files[$module.'/Database/Migrations/'.now()->format('Y_m_d_His').'_create_'.$table.'_table.php'] = 'php/migration.php.stub';
+            $files[$module.'/src/Models/Note.php'] = 'php/model.php.stub';
+            $files[$module.'/src/Notes.php'] = 'php/service.php.stub';
+            $files[$module.'/src/Http/Requests/StoreNoteRequest.php'] = 'php/request.php.stub';
+            $files[$module.'/src/Http/Controllers/NotesController.php'] = 'php/controller.php.stub';
+            $files[$module.'/database/migrations/'.now()->format('Y_m_d_His').'_create_'.$table.'_table.php'] = 'php/migration.php.stub';
         }
 
         return $files;

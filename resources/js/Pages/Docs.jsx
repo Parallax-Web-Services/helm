@@ -70,26 +70,27 @@ function Modules({ nextUrl }) {
     return (
         <>
             <p className="text-lg leading-8 text-muted">
-                A module keeps one application feature together: its routes, behavior, and reusable screen.
+                A module keeps one application feature together under the root modules directory: its routes, PHP behavior, database files, and React screen.
             </p>
             <p className="mt-4 leading-7 text-muted">
                 Notes is our first module. Maiden Voyage and the Notes page use the same notes behavior.
                 The React screen receives data and a save callback; the page connects it to browser storage or PHP.
             </p>
             <SectionHeading id="files">Where the files live</SectionHeading>
-            <CodeExample label="Built-in Notes module">{`app/Modules/Notes/
-  NotesServiceProvider.php
-  routes.php
-  Notes.php
-  Models/Note.php
-  Http/Controllers/NotesController.php
-  Http/Requests/StoreNoteRequest.php
-
-resources/js/Modules/Notes/
-  NotesApp.jsx
-  browser.js
-
-resources/js/Pages/Notes.jsx`}</CodeExample>
+            <CodeExample label="Built-in Notes module">{`modules/notes/
+  src/
+    Providers/NotesServiceProvider.php
+    Notes.php
+    Models/Note.php
+    Http/Controllers/NotesController.php
+    Http/Requests/StoreNoteRequest.php
+  routes/web.php
+  database/migrations/
+  database/factories/NoteFactory.php
+  resources/js/
+    NotesApp.jsx
+    browser.js
+    Pages/Notes.jsx`}</CodeExample>
             <dl className="space-y-4 leading-7 text-muted">
                 <div>
                     <dt className="font-semibold text-ink">Feature</dt>
@@ -101,19 +102,19 @@ resources/js/Pages/Notes.jsx`}</CodeExample>
                 </div>
                 <div>
                     <dt className="font-semibold text-ink">PHP module</dt>
-                    <dd>The provider loads the routes. The controller, request, service, and model handle database notes.</dd>
+                    <dd>The Notes namespace belongs to this module. Its provider loads routes and migrations; the controller, request, service, and model handle database notes.</dd>
                 </div>
             </dl>
             <p className="mt-4 leading-7 text-muted">
-                The built-in Notes table uses the existing migration in <code className="font-mono text-sm text-ink">database/migrations</code>.
-                PHP kits put their own migrations inside the generated module.
+                PHP migrations and factories stay inside their module. The provider registers its migrations with Laravel.
+                The page is named <code className="font-mono text-sm text-ink">notes/Notes</code> in Inertia; the first part identifies its module.
             </p>
             <SectionHeading id="reuse">Reuse the screen</SectionHeading>
             <p className="leading-7 text-muted">
                 Import the component from another page. This small example supplies one note and logs submitted titles to the browser console.
             </p>
             <CodeExample label="resources/js/Pages/IdeasPreview.jsx">{`import React from 'react';
-import NotesApp from '../Modules/Notes/NotesApp.jsx';
+import NotesApp from '../../../modules/notes/resources/js/NotesApp.jsx';
 
 export default function IdeasPreview() {
     return (
@@ -143,15 +144,20 @@ Route::get('/ideas-preview', fn () => Inertia::render('IdeasPreview'))
             </p>
             <SectionHeading id="register">Register a module</SectionHeading>
             <p className="leading-7 text-muted">
-                A module with PHP routes needs its provider added to <code className="font-mono text-sm text-ink">bootstrap/providers.php</code>.
-                For example, after generating an Ideas kit:
+                A module with PHP routes needs a Composer namespace mapping and an explicit provider.
+                For example, after generating an Ideas kit, add this entry inside <code className="font-mono text-sm text-ink">autoload.psr-4</code> in <code className="font-mono text-sm text-ink">composer.json</code>.
+                Keep the existing mappings and use commas between entries:
             </p>
+            <CodeExample label="Composer autoload entry">{'"Ideas\\\\": "modules/ideas/src/",'}</CodeExample>
+            <p className="mt-4 leading-7 text-muted">Add the provider to the existing array in <code className="font-mono text-sm text-ink">bootstrap/providers.php</code>:</p>
             <CodeExample label="bootstrap/providers.php">{`return [
     App\\Providers\\AppServiceProvider::class,
-    App\\Modules\\Notes\\NotesServiceProvider::class,
-    App\\Modules\\Ideas\\IdeasServiceProvider::class,
+    Notes\\Providers\\NotesServiceProvider::class,
+    Ideas\\Providers\\IdeasServiceProvider::class,
 ];`}</CodeExample>
-            <p className="leading-7 text-muted">Keep your existing providers in the list. The Ideas provider makes its routes available.</p>
+            <p className="leading-7 text-muted">Keep your existing providers in the list, then refresh Composer's autoload files:</p>
+            <CodeExample label="Autoload command">{'composer dump-autoload'}</CodeExample>
+            <p className="leading-7 text-muted">Composer loads the Ideas namespace; its provider makes the module's routes available.</p>
             <p className="mt-7 leading-7 text-muted">
                 Next: <a className="text-brand-light underline underline-offset-4 hover:text-ink" href={nextUrl}>generate your own module with a Slipstream kit</a>.
             </p>

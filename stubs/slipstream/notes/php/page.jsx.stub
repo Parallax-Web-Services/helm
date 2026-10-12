@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Head, router } from '@inertiajs/react';
-import NotesApp from '../Modules/{{ name }}/NotesApp.jsx';
+import NotesApp from '../NotesApp.jsx';
 
 export default function {{ name }}({ notes = [], storeUrl }) {
     const [error, setError] = useState(null);

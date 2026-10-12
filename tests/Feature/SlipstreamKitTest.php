@@ -54,18 +54,23 @@ class SlipstreamKitTest extends TestCase
         $command = $this->generate(['kit' => 'notes', 'name' => 'Ideas']);
 
         $this->assertSame(Command::SUCCESS, $command->getStatusCode());
-        $this->assertFileExists($this->workspace.'/resources/js/Modules/Ideas/NotesApp.jsx');
-        $this->assertFileExists($this->workspace.'/resources/js/Modules/Ideas/browser.js');
-        $this->assertFileExists($this->workspace.'/resources/js/Pages/Ideas.jsx');
+        $this->assertFileExists($this->workspace.'/modules/ideas/resources/js/NotesApp.jsx');
+        $this->assertFileExists($this->workspace.'/modules/ideas/resources/js/browser.js');
+        $this->assertFileExists($this->workspace.'/modules/ideas/resources/js/Pages/Ideas.jsx');
         $this->assertFileDoesNotExist($this->workspace.'/bootstrap/providers.php');
-        $this->assertDirectoryDoesNotExist($this->workspace.'/app/Modules/Ideas/Database');
-        $this->assertStringContainsString('App\\Modules\\Ideas\\IdeasServiceProvider::class', $command->getDisplay());
+        $this->assertFileDoesNotExist($this->workspace.'/composer.json');
+        $this->assertDirectoryDoesNotExist($this->workspace.'/app');
+        $this->assertDirectoryDoesNotExist($this->workspace.'/resources');
+        $this->assertStringContainsString('"Ideas\\\\": "modules/ideas/src/",', $command->getDisplay());
+        $this->assertStringContainsString('Run composer dump-autoload.', $command->getDisplay());
+        $this->assertDirectoryDoesNotExist($this->workspace.'/modules/ideas/database');
+        $this->assertStringContainsString('Ideas\\Providers\\IdeasServiceProvider::class', $command->getDisplay());
         $this->assertStringContainsString('Run npm run build.', $command->getDisplay());
         $this->assertStringContainsString('Visit /ideas. Notes stay in this browser.', $command->getDisplay());
         $this->assertStringNotContainsString('Run php artisan migrate.', $command->getDisplay());
         $this->loadModule('Ideas');
 
-        $this->get('/ideas')->assertOk()->assertInertia(fn (Assert $page): Assert => $page->component('Ideas', false));
+        $this->get('/ideas')->assertOk()->assertInertia(fn (Assert $page): Assert => $page->component('ideas/Ideas', false));
         $this->post('/ideas/notes', ['title' => 'A browser note'])->assertNotFound();
     }
 
@@ -73,27 +78,35 @@ class SlipstreamKitTest extends TestCase
     {
         $this->generate(['kit' => 'notes', 'name' => 'BuildIdeas']);
         $this->generate(['kit' => 'notes', 'name' => 'ServerIdeas', '--edition' => 'php']);
+        $this->files->ensureDirectoryExists($this->workspace.'/resources/js/Components');
+        $this->files->copy(base_path('resources/js/Components/Slipstream.jsx'), $this->workspace.'/resources/js/Components/Slipstream.jsx');
+        $this->files->copyDirectory(base_path('packages/zefram-js'), $this->workspace.'/packages/zefram-js');
         $process = new Process([
             'node', '--input-type=module', '-e', <<<'JS'
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { transform } from 'sucrase';
+import { build } from 'vite';
 
 const directory = process.argv[1];
-for (const file of [
-    directory + '/resources/js/Modules/BuildIdeas/NotesApp.jsx',
-    directory + '/resources/js/Pages/BuildIdeas.jsx',
-    directory + '/resources/js/Modules/ServerIdeas/NotesApp.jsx',
-    directory + '/resources/js/Pages/ServerIdeas.jsx',
-]) {
-    transform(fs.readFileSync(file, 'utf8'), { transforms: ['jsx'] });
-}
+await build({
+    configFile: false,
+    root: process.cwd(),
+    logLevel: 'silent',
+    build: {
+        write: false,
+        lib: {
+            entry: [
+                directory + '/modules/build-ideas/resources/js/Pages/BuildIdeas.jsx',
+                directory + '/modules/server-ideas/resources/js/Pages/ServerIdeas.jsx',
+            ],
+            formats: ['es'],
+        },
+        rolldownOptions: { external: ['react', 'react/jsx-runtime', '@inertiajs/react'] },
+    },
+});
 
-const runtime = pathToFileURL(process.cwd() + '/packages/zefram-js/src/index.js').href;
-const source = fs.readFileSync(directory + '/resources/js/Modules/BuildIdeas/browser.js', 'utf8')
-    .replace('../../../../packages/zefram-js/src/index.js', runtime);
-const { createBrowserNotes } = await import('data:text/javascript;base64,' + Buffer.from(source).toString('base64'));
+const { createBrowserNotes } = await import(pathToFileURL(directory + '/modules/build-ideas/resources/js/browser.js'));
+
 const values = new Map();
 const storage = { getItem: (key) => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };
 const service = createBrowserNotes({ storage });
@@ -146,7 +159,7 @@ JS,
         $this->assertDatabaseHas('research_ideas_notes', ['title' => 'My research', 'session_id' => $sessionId]);
         $this->assertDatabaseCount('research_ideas_notes', 2);
         $this->get('/research-ideas')->assertOk()->assertInertia(fn (Assert $page): Assert => $page
-            ->component('ResearchIdeas', false)
+            ->component('research-ideas/ResearchIdeas', false)
             ->has('notes', 1)
             ->where('notes.0.title', 'My research')
             ->where('notes.0.createdAt', '2026-10-11T12:00:00.000000Z')
@@ -192,11 +205,12 @@ JS,
         $this->assertStringContainsString($message, $command->getDisplay());
         $this->assertDirectoryDoesNotExist($this->workspace.'/app');
         $this->assertDirectoryDoesNotExist($this->workspace.'/resources');
+        $this->assertDirectoryDoesNotExist($this->workspace.'/modules');
     }
 
     public function test_a_collision_preserves_existing_code_and_writes_nothing_else(): void
     {
-        $path = $this->workspace.'/resources/js/Pages/Ideas.jsx';
+        $path = $this->workspace.'/modules/ideas/resources/js/Pages/Ideas.jsx';
         $this->files->ensureDirectoryExists(dirname($path));
         $this->files->put($path, 'My hand-written page');
 
@@ -204,14 +218,14 @@ JS,
 
         $this->assertSame(Command::FAILURE, $command->getStatusCode());
         $this->assertSame('My hand-written page', $this->files->get($path));
-        $this->assertDirectoryDoesNotExist($this->workspace.'/resources/js/Modules');
-        $this->assertFileDoesNotExist($this->workspace.'/app/Modules/Ideas/IdeasServiceProvider.php');
+        $this->assertFileDoesNotExist($this->workspace.'/modules/ideas/resources/js/NotesApp.jsx');
+        $this->assertFileDoesNotExist($this->workspace.'/modules/ideas/src/Providers/IdeasServiceProvider.php');
         $this->assertStringContainsString('No files were written.', $command->getDisplay());
     }
 
     public function test_module_names_cannot_collide_with_different_capitalization(): void
     {
-        $path = $this->workspace.'/app/Modules/Ideas/IdeasServiceProvider.php';
+        $path = $this->workspace.'/modules/ideas/src/Providers/IdeasServiceProvider.php';
         $this->files->ensureDirectoryExists(dirname($path));
         $this->files->put($path, 'My existing provider');
 
@@ -220,19 +234,43 @@ JS,
         $this->assertSame(Command::FAILURE, $command->getStatusCode());
         $this->assertSame('My existing provider', $this->files->get($path));
         $this->assertDirectoryDoesNotExist($this->workspace.'/resources');
-        $this->assertDirectoryDoesNotExist($this->workspace.'/app/Modules/IDEAS');
+        $this->assertDirectoryDoesNotExist($this->workspace.'/modules/i-d-e-a-s');
         $this->assertStringContainsString('module names are case-insensitive', $command->getDisplay());
     }
 
     public function test_a_blocked_parent_directory_is_rejected_before_writing(): void
     {
-        $this->files->put($this->workspace.'/app', 'An existing file');
+        $this->files->put($this->workspace.'/modules', 'An existing file');
 
         $command = $this->generate(['kit' => 'notes', 'name' => 'Ideas']);
 
         $this->assertSame(Command::FAILURE, $command->getStatusCode());
-        $this->assertSame('An existing file', $this->files->get($this->workspace.'/app'));
+        $this->assertSame('An existing file', $this->files->get($this->workspace.'/modules'));
         $this->assertDirectoryDoesNotExist($this->workspace.'/resources');
+    }
+
+    public function test_module_directory_slugs_are_case_insensitive(): void
+    {
+        $this->files->ensureDirectoryExists($this->workspace.'/modules/IDEAS');
+
+        $command = $this->generate(['kit' => 'notes', 'name' => 'Ideas']);
+
+        $this->assertSame(Command::FAILURE, $command->getStatusCode());
+        $this->assertDirectoryDoesNotExist($this->workspace.'/modules/ideas');
+        $this->assertSame([], $this->files->allFiles($this->workspace.'/modules/IDEAS'));
+    }
+
+    public function test_a_module_directory_symlink_is_not_followed(): void
+    {
+        $outside = $this->workspace.'/outside';
+        $this->files->ensureDirectoryExists($outside);
+        symlink($outside, $this->workspace.'/modules');
+
+        $command = $this->generate(['kit' => 'notes', 'name' => 'Ideas']);
+
+        $this->assertSame(Command::FAILURE, $command->getStatusCode());
+        $this->assertSame([], $this->files->allFiles($outside));
+        $this->assertStringContainsString('No files were written.', $command->getDisplay());
     }
 
     /**
@@ -259,6 +297,11 @@ JS,
             'traversal' => [['kit' => 'notes', 'name' => '../Ideas'], 'Use a PascalCase module name'],
             'namespace' => [['kit' => 'notes', 'name' => 'App\\Ideas'], 'Use a PascalCase module name'],
             'lowercase' => [['kit' => 'notes', 'name' => 'ideas'], 'Use a PascalCase module name'],
+            'reserved App namespace' => [['kit' => 'notes', 'name' => 'App'], 'reserved PHP namespaces'],
+            'reserved case-insensitive App namespace' => [['kit' => 'notes', 'name' => 'APP'], 'reserved PHP namespaces'],
+            'reserved Database namespace' => [['kit' => 'notes', 'name' => 'Database'], 'reserved PHP namespaces'],
+            'reserved Tests namespace' => [['kit' => 'notes', 'name' => 'Tests'], 'reserved PHP namespaces'],
+            'trailing newline' => [['kit' => 'notes', 'name' => "Ideas\n"], 'Use a PascalCase module name'],
             'code injection' => [['kit' => 'notes', 'name' => "Ideas';exit;"], 'Use a PascalCase module name'],
         ];
     }
@@ -286,7 +329,7 @@ JS,
     {
         DB::select('select 1');
         $this->loadModule($name);
-        $path = $this->workspace.'/app/Modules/'.$name.'/Database/Migrations';
+        $path = $this->workspace.'/modules/'.Str::kebab($name).'/database/migrations';
         $this->assertContains($path, $this->app['migrator']->paths());
         $migration = require $this->files->glob($path.'/*.php')[0];
         $migration->up();
@@ -294,8 +337,8 @@ JS,
 
     private function loadModule(string $name): void
     {
-        $prefix = 'App\\Modules\\'.$name.'\\';
-        $path = $this->workspace.'/app/Modules/'.$name.'/';
+        $prefix = $name.'\\';
+        $path = $this->workspace.'/modules/'.Str::kebab($name).'/src/';
         $autoload = static function (string $class) use ($prefix, $path): void {
             if (str_starts_with($class, $prefix)) {
                 require $path.str_replace('\\', '/', substr($class, strlen($prefix))).'.php';
@@ -303,7 +346,7 @@ JS,
         };
         spl_autoload_register($autoload);
         $this->autoloaders[] = $autoload;
-        $this->app->register($prefix.$name.'ServiceProvider');
+        $this->app->register($prefix.'Providers\\'.$name.'ServiceProvider');
         $this->app['router']->getRoutes()->refreshNameLookups();
     }
 }

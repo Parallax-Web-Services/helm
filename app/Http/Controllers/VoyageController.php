@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Modules\Notes\Notes;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Notes\Notes;
 
 class VoyageController extends Controller
 {

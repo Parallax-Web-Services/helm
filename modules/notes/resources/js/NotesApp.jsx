@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Card, Input } from '../../Components/Slipstream.jsx';
+import { Button, Card, Input } from '../../../../resources/js/Components/Slipstream.jsx';
 
 export default function NotesApp({ notes, onSave, error, appName = 'My notes' }) {
     const [title, setTitle] = useState('');

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Head } from '@inertiajs/react';
-import NotesApp from '../Modules/{{ name }}/NotesApp.jsx';
-import { createBrowserNotes } from '../Modules/{{ name }}/browser.js';
+import NotesApp from '../NotesApp.jsx';
+import { createBrowserNotes } from '../browser.js';
 
 function openBrowserNotes() {
     try {

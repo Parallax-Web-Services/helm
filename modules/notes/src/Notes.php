@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Modules\Notes;
+namespace Notes;
 
-use App\Modules\Notes\Models\Note;
+use Notes\Models\Note;
 
 class Notes
 {

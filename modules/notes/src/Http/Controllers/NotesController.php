@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Modules\Notes\Http\Controllers;
+namespace Notes\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Notes\Http\Requests\StoreNoteRequest;
-use App\Modules\Notes\Notes;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Notes\Http\Requests\StoreNoteRequest;
+use Notes\Notes;
 
 class NotesController extends Controller
 {
@@ -17,7 +17,7 @@ class NotesController extends Controller
     {
         $edition = $request->query('edition') === 'php' ? 'php' : 'js';
 
-        return Inertia::render('Notes', [
+        return Inertia::render('notes/Notes', [
             'edition' => $edition,
             'notes' => $edition === 'php'
                 ? $notes->allForSession($request->session()->getId())

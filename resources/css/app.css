@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @source '../js';
+@source '../../modules';
 @source '../../packages/zefram-js/src';
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';

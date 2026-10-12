@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Modules\Notes\Database\Factories;
+namespace Notes\Database\Factories;
 
-use App\Modules\Notes\Models\Note;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
+use Notes\Models\Note;
 
 /**
  * @extends Factory<Note>

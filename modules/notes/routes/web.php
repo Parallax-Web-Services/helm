@@ -1,7 +1,7 @@
 <?php
 
-use App\Modules\Notes\Http\Controllers\NotesController;
 use Illuminate\Support\Facades\Route;
+use Notes\Http\Controllers\NotesController;
 
 Route::middleware('web')->group(function (): void {
     Route::get('/notes', [NotesController::class, 'index'])->name('notes.index');
