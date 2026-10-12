@@ -1,58 +1,170 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <a href="https://zefram.tech">
+    <img src="resources/images/zefram-lockup.png" width="360" alt="ZEFRAM">
+  </a>
 </p>
 
-## About Laravel
+# ZEFRAM
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+**FOR BUILDING SOFTWARE WITH AI**
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+A distro of LARAVEL, enhanced for the AI age. ZEFRAM is an **unofficial LARAVEL distribution** by Parallax Web Services, Inc.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+Jump start your web development journey with a familiar foundation, editable modules, and a guided first application. Make web development fun & easy again.
 
-## Learning Laravel
+[Website](https://zefram.tech) · [Getting started](https://zefram.tech/get-started) · [ARCHER](https://archer.zefram.tech) · [SLIPSTREAM](https://slipstream.codes)
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## What’s included
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+The current MVP includes:
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+- **LARAVEL 13** with **INERTIA 3**, **REACT 19**, **TAILWIND 4**, and **VITE 8**.
+- **Maiden Voyage**: a guided Notes application with editable code and a live preview. Name your app, connect its Save button, and display saved notes.
+- **JS and PHP editions**: browser storage for the JS edition, or session-scoped database storage for the PHP edition.
+- **A reusable Notes module**: its PHP routes and behavior live in `app/Modules/Notes`; its shared screen and browser behavior live in `resources/js/Modules/Notes`.
+- **SLIPSTREAM kits**: copy the Notes feature into your own module, then edit the generated files.
+- **Local documentation** for getting started, modules, and kits.
+- **LARAVEL BOOST** for working with AI coding agents.
 
-## Agentic Development
+This is an application you can run and customize. The standalone browser preview lets you try Maiden Voyage without running PHP; generated kits currently run in the LARAVEL/INERTIA application.
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+## Get started
 
-```bash
-composer require laravel/boost --dev
+Choose the path that fits what you want to do. Both paths start by cloning this repository:
 
-php artisan boost:install
+```sh
+git clone https://github.com/Parallax-Web-Services/zefram.git my-app
+cd my-app
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+### Try the browser preview
+
+Use **NODE.JS 24** and **NPM**. PHP, COMPOSER, and a database server are not needed for this preview.
+
+```sh
+npm install
+npm run build
+npm run serve:js
+```
+
+Open the address printed by the server, usually [http://127.0.0.1:4173](http://127.0.0.1:4173). Start Maiden Voyage and save your first note.
+
+Notes stay in the same browser and site using browser storage. This preview does not provide the PHP edition or serve generated module routes.
+
+### Run the full application
+
+You’ll need:
+
+- **PHP 8.3 or newer**, with the extensions required by COMPOSER and SQLite support.
+- **COMPOSER**.
+- **NODE.JS 24** and **NPM**.
+- **GIT** to clone the source.
+
+From a fresh checkout:
+
+```sh
+composer run setup
+php artisan serve
+```
+
+The setup script installs PHP and frontend dependencies, creates `.env` when missing, generates the application key, prepares the configured database, and builds the frontend. The default local database is SQLite.
+
+Open the address printed by ARTISAN, usually [http://127.0.0.1:8000](http://127.0.0.1:8000). Choose JS or PHP in Maiden Voyage. The PHP edition saves notes in the database for the current browser session.
+
+For ongoing development, use:
+
+```sh
+composer run dev
+```
+
+Use ARTISAN if you prefer it.
+
+### Explore the application
+
+On the LARAVEL server:
+
+| Path | What you’ll find |
+| --- | --- |
+| `/` | Maiden Voyage |
+| `/notes` | The Notes application |
+| `/docs/getting-started` | Setup and your first app |
+| `/docs/modules` | Module structure and reuse |
+| `/docs/slipstream-kits` | Generating and customizing a kit |
+
+## Make your first module
+
+The first SLIPSTREAM kit is Notes. Run the generator from the full ZEFRAM application, including for the JS edition.
+
+For browser storage:
+
+```sh
+php artisan slipstream:kit notes Ideas --edition=js
+```
+
+For database storage, use the PHP edition instead:
+
+```sh
+php artisan slipstream:kit notes Ideas --edition=php
+```
+
+Choose one edition for a given module name. The generator refuses existing module names and files.
+
+Add this entry to the existing array in `bootstrap/providers.php`, keeping the other providers:
+
+```php
+App\Modules\Ideas\IdeasServiceProvider::class,
+```
+
+For the PHP edition, run the migration:
+
+```sh
+php artisan migrate
+```
+
+Rebuild the frontend:
+
+```sh
+npm run build
+```
+
+With your LARAVEL server running, visit `/ideas`. Start editing `resources/js/Modules/Ideas/NotesApp.jsx`; the generated module’s source is yours to change.
+
+Maiden Voyage edits are not transferred automatically into a generated kit. Download your edited component from the tour if you want to carry those changes over.
+
+## One connected development cycle
+
+**SLIPSTREAM → ZEFRAM → ARCHER → iterate.**
+
+- **SLIPSTREAM** provides the AI engineering path for building applications.
+- **ZEFRAM** provides the LARAVEL foundation, modules, and application conventions.
+- **ARCHER** is the installer and distribution manager being developed for the toolchain.
+
+All three also stand on their own. You can start directly from this repository with COMPOSER and NPM; using SLIPSTREAM or ARCHER is optional.
+
+ZEFRAM and ARCHER are in active development. ZEFRAM CLOUD is planned; managed hosting is not included in this repository.
+
+## Development checks
+
+Run the checks relevant to your changes:
+
+```sh
+composer run test
+npm run test:js
+npm run build
+```
+
+The frontend build produces the LARAVEL assets, the standalone browser preview, and the editable-code preview bundle.
+
+For framework features and APIs, use the [LARAVEL documentation](https://laravel.com/docs/13.x). The repository’s manifests and lockfiles define its dependency versions.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Open an issue or pull request in this repository. Explain the problem, the resulting behavior, and how you verified your change. Keep new modules and kit changes consistent with the existing application.
 
-## Code of Conduct
+## License and copyright
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+ZEFRAM is MIT licensed, as declared in [composer.json](composer.json).
 
-## Security Vulnerabilities
+© Parallax Web Services, Inc.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+ZEFRAM is an unofficial LARAVEL distribution. LARAVEL and the other dependencies retain their respective copyright notices and licenses.
