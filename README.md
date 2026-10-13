@@ -83,6 +83,22 @@ composer run dev
 
 Use ARTISAN if you prefer it.
 
+### Install with ARCHER
+
+[ARCHER](https://archer.zefram.tech) can install the same dependencies without COMPOSER or NPM. It replays `composer.lock` and `package-lock.json` exactly as committed, reading its settings from the `ARCHER_*` keys in `.env.example`, which you can override in `.env`. It needs ARCHER `v0.3.0-alpha.3` or newer, PHP 8.4 or newer, and NODE.JS 24.
+
+```sh
+archer i
+cp .env.example .env
+touch database/database.sqlite
+archer run -- php artisan key:generate
+archer run -- php artisan migrate
+archer run -- npm run build
+archer run -- php artisan serve
+```
+
+ARCHER does not run COMPOSER or NPM scripts, so the commands after `archer i` do what `composer run setup` would otherwise do.
+
 ### Explore the application
 
 On the LARAVEL server:
