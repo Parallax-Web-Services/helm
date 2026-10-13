@@ -85,7 +85,7 @@ Use ARTISAN if you prefer it.
 
 ### Install with ARCHER
 
-[ARCHER](https://archer.zefram.tech) can install the same dependencies without COMPOSER or NPM. It replays `composer.lock` and `package-lock.json` exactly as committed, reading its settings from the `ARCHER_*` keys in `.env.example`, which you can override in `.env`. It needs ARCHER `v0.3.0-alpha.3` or newer, PHP 8.4 or newer, and NODE.JS 24.
+[ARCHER](https://archer.zefram.tech) can install the same dependencies without COMPOSER or NPM. It replays `composer.lock` and `package-lock.json` exactly as committed, reading its settings from the `ARCHER_*` keys in `.env.example`, which you can override in `.env`. It needs ARCHER `v0.3.0-alpha.4` or newer, PHP 8.4 or newer, and NODE.JS 24.
 
 ```sh
 archer i
