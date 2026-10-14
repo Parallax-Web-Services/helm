@@ -195,7 +195,7 @@ export default function Voyage({ edition = 'js', notes = [], standalone = false 
     const switchEdition = (nextEdition) => {
         if (nextEdition === edition || isSwitchingEdition || standalone) return;
         setIsSwitchingEdition(true);
-        router.get('/', { edition: nextEdition }, {
+        router.get('/voyage', { edition: nextEdition }, {
             preserveState: true,
             preserveScroll: true,
             onFinish: () => setIsSwitchingEdition(false),
@@ -248,7 +248,7 @@ export default function Voyage({ edition = 'js', notes = [], standalone = false 
             <div className="min-h-screen bg-[#090810] text-ink">
                 <header className="border-b border-brand-border/40 bg-surface/70">
                     <div className="mx-auto flex max-w-[1680px] items-center justify-between gap-5 px-5 py-5 sm:px-8 lg:px-10">
-                        <a href={standalone ? window.location.pathname : '/'} aria-label="Zefram home"><img src={zeframLockup} alt="Zefram" className="h-auto w-[175px] sm:w-[205px]" /></a>
+                        <a href={standalone ? window.location.pathname : '/voyage'} aria-label="Zefram home"><img src={zeframLockup} alt="Zefram" className="h-auto w-[175px] sm:w-[205px]" /></a>
                         <div className="flex flex-wrap items-center justify-end gap-4 sm:gap-5"><a href={docsUrl('getting-started', { edition, name: moduleName, standalone })} className="rounded text-sm text-brand-light hover:text-ink focus-visible:outline-2 focus-visible:outline-brand-light">Docs</a>{!standalone && <a href={`/notes?edition=${edition}`} className="text-sm text-brand-light hover:text-ink">Notes module</a>}<span className="hidden text-sm font-medium tracking-wide text-muted sm:block">Maiden Voyage</span></div>
                     </div>
                 </header>

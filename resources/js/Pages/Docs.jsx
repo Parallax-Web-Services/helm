@@ -207,7 +207,7 @@ function SlipstreamKits({ edition, moduleName, standalone, tourUrl }) {
 export default function Docs({ section = 'getting-started', edition = 'js', moduleName = 'Ideas', standalone = false }) {
     const currentPage = pages.find((page) => page.id === section) || pages[0];
     const options = { edition, name: moduleName, standalone };
-    const tourUrl = standalone ? window.location.pathname : `/?edition=${edition}`;
+    const tourUrl = standalone ? window.location.pathname : `/voyage?edition=${edition}`;
     const linkClass = 'rounded-md px-3 py-2 text-sm focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-light';
 
     return (

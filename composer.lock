@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bf21354d67bc51dfa6dd2a7eb8225f82",
+    "content-hash": "54fd4ce4acf81602b78cc5c8960e00eb",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -6379,6 +6379,65 @@
             "time": "2026-09-03T16:02:27+00:00"
         },
         {
+            "name": "thetalabs/laravel-oauth2",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://gitlab.com/ThetaLabs/laravel-oauth2.git",
+                "reference": "357d29df5ad6162928ebf4ddea6d9218f8032a1b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://gitlab.com/api/v4/projects/ThetaLabs%2Flaravel-oauth2/repository/archive.zip?sha=357d29df5ad6162928ebf4ddea6d9218f8032a1b",
+                "reference": "357d29df5ad6162928ebf4ddea6d9218f8032a1b",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/auth": "*",
+                "illuminate/container": "*",
+                "illuminate/contracts": "*",
+                "illuminate/cookie": "*",
+                "illuminate/database": "*",
+                "illuminate/encryption": "*",
+                "illuminate/http": "*",
+                "illuminate/routing": "*",
+                "illuminate/support": "*",
+                "php": "^7.4|^8.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "ThetaLabs\\Oauth\\OauthServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "ThetaLabs\\Oauth\\": "src"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Thomas Krause",
+                    "email": "trueswordmaster@gmail.com"
+                },
+                {
+                    "name": "Sean Talbot",
+                    "email": "sean@thetalabs.io"
+                }
+            ],
+            "description": "OAuth2 client authentication package for the Laravel framework",
+            "support": {
+                "source": "https://gitlab.com/ThetaLabs/laravel-oauth2/-/tree/master"
+            },
+            "time": "2026-07-27T19:30:43-04:00"
+        },
+        {
             "name": "tijsverkoyen/css-to-inline-styles",
             "version": "v2.4.0",
             "source": {
@@ -9203,7 +9262,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "parallax/cli": 20
+        "parallax/cli": 20,
+        "thetalabs/laravel-oauth2": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
