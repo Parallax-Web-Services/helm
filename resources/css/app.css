@@ -6,6 +6,7 @@
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
 
+/* Zefram tokens. The Maiden Voyage, Docs and Notes screens are built on these. */
 @theme {
     --font-sans: 'Inter', 'Inter Display', ui-sans-serif, system-ui, sans-serif;
     --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
@@ -22,18 +23,151 @@
     --color-hair: rgba(173, 151, 211, .16);
 }
 
+/* Helm tokens: display + body type, and the deck's motion. */
+@theme {
+    --font-display: 'Orbitron', ui-sans-serif, system-ui, sans-serif;
+    --font-body: 'Exo 2', ui-sans-serif, system-ui, sans-serif;
+
+    --animate-orbit: helm-orbit 2.8s linear infinite;
+    --animate-orbit-reverse: helm-orbit 4.4s linear infinite reverse;
+    --animate-orbit-fast: helm-orbit 1.5s linear infinite;
+    --animate-core: helm-core 1.8s ease-in-out infinite;
+
+    @keyframes helm-orbit {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes helm-core {
+        0%, 100% {
+            opacity: .45;
+            transform: scale(.8);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+    }
+}
+
+/*
+ * One accent drives the whole deck. Helm/theme.js sets --helm-accent-400 (and a
+ * readable --helm-accent-contrast) from helm.config.js; every other step of the
+ * scale, the glow, and the near-black surfaces are derived from it here. Add
+ * .helm-accent-scope to any element (with its own --helm-accent-400) to give
+ * that subtree a different accent, as the suite switcher does for each app.
+ */
+@theme inline {
+    --color-accent-50: var(--helm-accent-50);
+    --color-accent-100: var(--helm-accent-100);
+    --color-accent-200: var(--helm-accent-200);
+    --color-accent-300: var(--helm-accent-300);
+    --color-accent-400: var(--helm-accent-400);
+    --color-accent-500: var(--helm-accent-500);
+    --color-accent-600: var(--helm-accent-600);
+    --color-accent-700: var(--helm-accent-700);
+    --color-accent-800: var(--helm-accent-800);
+    --color-accent-900: var(--helm-accent-900);
+    --color-accent-950: var(--helm-accent-950);
+    --color-accent-contrast: var(--helm-accent-contrast);
+    --color-deck: var(--helm-page);
+    --color-deck-rail: var(--helm-rail);
+    --color-deck-panel: var(--helm-panel);
+}
+
 :root {
     color-scheme: dark;
     font-synthesis: none;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     --brand-gradient: linear-gradient(111deg, #8739e9, #a454e6 55%, #b85ec8);
+
+    --helm-accent-400: #73bbff;
+    --helm-accent-contrast: #04101d;
+    --helm-base: #03060b;
+}
+
+:root, .helm-accent-scope {
+    --helm-accent-50: color-mix(in oklab, var(--helm-accent-400) 8%, white);
+    --helm-accent-100: color-mix(in oklab, var(--helm-accent-400) 20%, white);
+    --helm-accent-200: color-mix(in oklab, var(--helm-accent-400) 42%, white);
+    --helm-accent-300: color-mix(in oklab, var(--helm-accent-400) 70%, white);
+    --helm-accent-500: color-mix(in oklab, var(--helm-accent-400) 84%, black);
+    --helm-accent-600: color-mix(in oklab, var(--helm-accent-400) 68%, black);
+    --helm-accent-700: color-mix(in oklab, var(--helm-accent-400) 54%, black);
+    --helm-accent-800: color-mix(in oklab, var(--helm-accent-400) 42%, black);
+    --helm-accent-900: color-mix(in oklab, var(--helm-accent-400) 32%, black);
+    --helm-accent-950: color-mix(in oklab, var(--helm-accent-400) 18%, black);
+    --helm-glow: color-mix(in oklab, var(--helm-accent-400) 55%, transparent);
+}
+
+:root {
+    --helm-page: color-mix(in oklab, var(--helm-accent-950) 22%, var(--helm-base));
+    --helm-rail: color-mix(in oklab, var(--helm-accent-950) 14%, #010307);
+    --helm-panel: color-mix(in oklab, var(--helm-accent-950) 30%, #050912);
+}
+
+html {
+    scrollbar-gutter: stable;
 }
 
 body {
     margin: 0;
-    background: #090810;
+    background: var(--helm-page);
     color: var(--color-ink);
+}
+
+.helm {
+    font-family: var(--font-body);
+    accent-color: var(--helm-accent-400);
+}
+
+/* Ambient lighting behind the deck: a soft accent glow from the top-left. */
+.helm-ambient {
+    background:
+        radial-gradient(56rem 36rem at -8% -18%, color-mix(in oklab, var(--helm-accent-400) 13%, transparent), transparent 62%),
+        radial-gradient(40rem 28rem at 108% -6%, color-mix(in oklab, var(--helm-accent-600) 9%, transparent), transparent 60%);
+}
+
+/* Hairline instrument grid, faded out towards the bottom-right. */
+.helm-grid {
+    background-image:
+        linear-gradient(rgb(148 163 184 / .07) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(148 163 184 / .07) 1px, transparent 1px);
+    background-size: 32px 32px;
+    mask-image: radial-gradient(ellipse at top left, black, transparent 72%);
+}
+
+/*
+ * Zefram components (Notes, kits) placed inside the Helm shell pick up the
+ * Helm accent instead of Zefram's violet.
+ */
+.helm-adopt {
+    --color-brand: var(--helm-accent-400);
+    --color-brand-light: var(--helm-accent-200);
+    --color-brand-border: color-mix(in oklab, var(--helm-accent-400) 30%, transparent);
+    --color-surface: color-mix(in oklab, var(--helm-base) 70%, transparent);
+    --color-surface-raised: color-mix(in oklab, white 4%, transparent);
+    --color-ink: #f1f5f9;
+    --color-muted: #94a3b8;
+    --color-dim: #64748b;
+    --brand-gradient: linear-gradient(111deg, var(--helm-accent-700), var(--helm-accent-600));
+}
+
+/* One focus ring everywhere, in the current accent. */
+@utility focus-ring {
+    &:focus-visible {
+        outline: 2px solid var(--helm-accent-400);
+        outline-offset: 2px;
+    }
+}
+
+@utility focus-ring-inset {
+    &:focus-visible {
+        outline: 2px solid var(--helm-accent-400);
+        outline-offset: -2px;
+    }
 }
 
 .brand-button {
@@ -58,8 +192,8 @@ textarea {
 }
 
 ::selection {
-    background: #a567ff;
-    color: white;
+    background: var(--helm-accent-400);
+    color: var(--helm-accent-contrast);
 }
 
 ::-webkit-scrollbar {
@@ -68,7 +202,7 @@ textarea {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #38304b;
+    background: rgb(148 163 184 / .22);
     border-radius: 10px;
 }
 
@@ -80,5 +214,11 @@ textarea {
     *, *::before, *::after {
         scroll-behavior: auto !important;
         transition-duration: 0.01ms !important;
+    }
+}
+
+@media (forced-colors: active) {
+    .helm-ambient, .helm-grid {
+        display: none;
     }
 }
