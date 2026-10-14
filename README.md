@@ -1,189 +1,120 @@
 <p align="center">
-  <a href="https://zefram.tech">
-    <img src="resources/images/zefram-lockup.png" width="360" alt="ZEFRAM">
-  </a>
+  <img src="public/helm/mark.svg" width="72" alt="">
 </p>
 
-# ZEFRAM
+# HELM
 
-**FOR BUILDING SOFTWARE WITH AI**
+**The command deck for your Laravel apps. One sign-in across all of them, through Nexus.**
 
-A distro of LARAVEL, enhanced for the AI age. ZEFRAM is an **unofficial LARAVEL distribution** by Parallax Web Services, Inc.
+Helm by Parallax is the dashboard pattern Parallax builds its own apps with, released as an open-source starter app. You get a dark command-deck shell, a set of UI components, and sign-in through [Nexus](https://github.com/Parallax-Web-Services/nexus), Parallax's open-source accounts server. Build one app with it, or a whole suite that shares one account, one team list and one sign-in.
 
-Jump start your web development journey with a familiar foundation, editable modules, and a guided first application. Make web development fun & easy again.
+Helm is a [ZEFRAM](https://github.com/Parallax-Web-Services/zefram) edition: **LARAVEL 13**, **INERTIA 3**, **REACT 19**, **TAILWIND 4** and **VITE 8**, with ZEFRAM's modules, SLIPSTREAM kits and Maiden Voyage included.
 
-[Website](https://zefram.tech) · [Getting started](https://zefram.tech/get-started) · [ARCHER](https://archer.zefram.tech) · [SLIPSTREAM](https://slipstream.codes)
+## What's included
 
-## What’s included
-
-The current MVP includes:
-
-- **LARAVEL 13** with **INERTIA 3**, **REACT 19**, **TAILWIND 4**, and **VITE 8**.
-- **Maiden Voyage**: a guided Notes application with editable code and a live preview. Name your app, connect its Save button, and display saved notes.
-- **JS and PHP editions**: browser storage for the JS edition, or session-scoped database storage for the PHP edition.
-- **A reusable Notes module**: its PHP source, routes, database files, and React screen live together in `modules/notes`, with its own `Notes\` namespace.
-- **SLIPSTREAM CLI**: included by default through `parallax/cli`; use the project command to scaffold editable kits.
-- **SLIPSTREAM kits**: copy the Notes feature into your own module, then edit the generated files.
-- **Local documentation** for getting started, modules, and kits.
-- **LARAVEL BOOST** for working with AI coding agents.
-
-This is an application you can run and customize. The standalone browser preview lets you try Maiden Voyage without running PHP; generated kits currently run in the LARAVEL/INERTIA application.
+- **The shell**: a sidebar that becomes a drawer on small screens, a top bar, breadcrumbs, tabs and flash messages.
+- **Team switcher and app switcher**: switch the team you're looking at, or hop to a sibling app in your suite. Each app has its own accent colour.
+- **Deck components**: panels, cards, stats, eyebrows, empty states and a spinner, in the command-deck style.
+- **UI primitives**: buttons, form fields, menus, modals, tables and pagination, built on [Headless UI](https://headlessui.com) for keyboard support and accessibility.
+- **Nexus sign-in**: OAuth 2.0 through Nexus. Helm keeps a local copy of each account and its teams, and refreshes it while people work.
+- **Local dev sign-in**: explore a fresh checkout with a demo account and crew before you run Nexus.
+- **Everything from ZEFRAM**: the Notes module, SLIPSTREAM kits, Maiden Voyage at `/voyage` and local docs at `/docs`.
 
 ## Get started
 
-Choose the path that fits what you want to do. Both paths start by cloning this repository:
+You'll need **PHP 8.4 or newer**, **COMPOSER**, **NODE.JS 24** and **NPM**.
 
 ```sh
-git clone https://github.com/Parallax-Web-Services/zefram.git my-app
+git clone https://github.com/Parallax-Web-Services/helm.git my-app
 cd my-app
-```
-
-### Try the browser preview
-
-Use **NODE.JS 24** and **NPM**. PHP, COMPOSER, and a database server are not needed for this preview.
-
-```sh
-npm install
-npm run build
-npm run serve:js
-```
-
-Open the address printed by the server, usually [http://127.0.0.1:4173](http://127.0.0.1:4173). Start Maiden Voyage and save your first note.
-
-Notes stay in the same browser and site using browser storage. This preview does not provide the PHP edition or serve generated module routes.
-
-### Run the full application
-
-You’ll need:
-
-- **PHP 8.4 or newer**, with the extensions required by COMPOSER and SQLite support.
-- **COMPOSER**.
-- **NODE.JS 24** and **NPM**.
-- **GIT** to clone the source.
-
-From a fresh checkout:
-
-```sh
 composer run setup
-export PATH="$PWD:$PATH"
 php artisan serve
 ```
 
-The setup script installs PHP and frontend dependencies, creates `.env` when missing, generates the application key, prepares the configured database, and builds the frontend. The default local database is SQLite.
+Open [http://127.0.0.1:8000](http://127.0.0.1:8000) and choose **Local dev sign-in**. It signs you in as a demo account with a small team, so every page has something to show. Local dev sign-in only exists when `APP_ENV=local`.
 
-SLIPSTREAM CLI is installed by default through `parallax/cli`. On Linux or WSL, run the PATH command from your project directory once per shell to select this checkout’s `slipstream` executable. You can also invoke `./slipstream` directly from the checkout. ARTISAN remains available for ordinary LARAVEL commands.
+For ongoing development, run `composer run dev` instead of `php artisan serve`.
 
-Open the address printed by ARTISAN, usually [http://127.0.0.1:8000](http://127.0.0.1:8000). Choose JS or PHP in Maiden Voyage. The PHP edition saves notes in the database for the current browser session.
+## Connect Nexus
 
-For ongoing development, use:
+Nexus owns accounts, teams and billing. Helm is one of its OAuth clients.
 
-```sh
-composer run dev
+1. Run Nexus. Its README covers local setup. Locally, serve it on a different hostname from Helm so the two apps don't share cookies, for example `php artisan serve --host=localhost --port=8001`.
+2. In Nexus, register Helm as a client, with the redirect URL `http://127.0.0.1:8000/oauth/callback` (your Helm `APP_URL` followed by `/oauth/callback`):
+
+   ```sh
+   php artisan passport:client
+   ```
+
+3. In Helm's `.env`, set:
+
+   ```sh
+   APP_URL=http://127.0.0.1:8000
+   NEXUS_URL=http://localhost:8001
+   OAUTH_CLIENT_ID=<client id from Nexus>
+   OAUTH_CLIENT_SECRET=<client secret from Nexus>
+   ```
+
+**Sign in with Nexus** now sends people to Nexus and back. Signing out of Helm also signs out of Nexus. The Account, Team and Billing links in the shell open the matching Nexus pages.
+
+### How sign-in works
+
+- Nexus authenticates people. Helm never stores passwords.
+- On sign-in, Helm copies the account and its teams from Nexus's `/api/me` into its own `users`, `teams` and `team_user` tables, using the same ids as Nexus.
+- While someone is signed in, Helm pulls `/api/me` again once its copy is older than `NEXUS_SYNC_INTERVAL` seconds (default 60). Teams created or changed in Nexus show up without signing out. If Nexus is unreachable, Helm keeps working and tries again later.
+- Switching teams in Helm changes only which team you're looking at in this session. Membership and the account's default team stay in Nexus.
+
+## Make it yours
+
+Most changes start in one file, `resources/js/helm.config.js`:
+
+- `brand`: your app's name, mark and accent colour.
+- `navigation`: sidebar sections and links.
+- `workspaces`: the apps in your suite, for the app switcher.
+
+Pages live in `resources/js/Pages` and use the Helm layout:
+
+```jsx
+import HelmLayout from '../Layouts/HelmLayout.jsx';
+import { Panel } from '../Helm/deck/Panel.jsx';
+import { Stat } from '../Helm/deck/Stat.jsx';
+
+export default function Reports({ total }) {
+    return (
+        <HelmLayout title="Reports">
+            <Panel>
+                <Stat label="Reports filed" value={total} />
+            </Panel>
+        </HelmLayout>
+    );
+}
 ```
 
-Use ARTISAN if you prefer it.
+The components are in `resources/js/Helm`: `ui` for primitives, `deck` for the command-deck pieces and `shell` for the layout. They're your code. Edit them freely.
 
-### Install with ARCHER
+## Build a suite
 
-[ARCHER](https://archer.zefram.tech) can install the same dependencies without COMPOSER or NPM. It replays `composer.lock` and `package-lock.json` exactly as committed, reading its settings from the `ARCHER_*` keys in `.env.example`, which you can override in `.env`. It needs ARCHER `v0.3.0-alpha.4` or newer, PHP 8.4 or newer, and NODE.JS 24.
+Helm is designed for several apps that share one Nexus:
 
-```sh
-archer i
-cp .env.example .env
-touch database/database.sqlite
-archer run -- php artisan key:generate
-archer run -- php artisan migrate
-archer run -- npm run build
-archer run -- php artisan serve
-```
+1. Start each app from Helm and give it its own `brand` and accent in `helm.config.js`.
+2. Register each app as a separate client in Nexus, with its own redirect URL.
+3. List every app in each app's `workspaces`.
 
-ARCHER does not run COMPOSER or NPM scripts, so the commands after `archer i` do what `composer run setup` would otherwise do.
+People sign in once at Nexus. The app switcher takes them between apps, and every app sees the same accounts and teams.
 
-### Explore the application
+## Built on ZEFRAM
 
-On the LARAVEL server:
+Helm keeps ZEFRAM's tools for growing an app:
 
-| Path | What you’ll find |
+| Path | What you'll find |
 | --- | --- |
-| `/` | Maiden Voyage |
-| `/notes` | The Notes application |
-| `/docs/getting-started` | Setup and your first app |
-| `/docs/modules` | Module structure and reuse |
-| `/docs/slipstream-kits` | Generating and customizing a kit |
+| `/voyage` | Maiden Voyage, ZEFRAM's guided first app |
+| `/notes` | The Notes module |
+| `/docs` | Getting started, modules and SLIPSTREAM kits |
 
-## Make your first module
-
-The first SLIPSTREAM kit is Notes. Run the generator from the full ZEFRAM application with PHP 8.4 or newer, including for the JS edition.
-
-On Linux or WSL, select this project’s CLI once per shell from the project directory:
-
-```sh
-export PATH="$PWD:$PATH"
-```
-
-For browser storage:
-
-```sh
-slipstream kit notes Ideas --edition=js
-```
-
-For database storage, use the PHP edition instead:
-
-```sh
-slipstream kit notes Ideas --edition=php
-```
-
-Choose one edition for a given module name. The generator refuses existing module names and files.
-
-The kit lives in `modules/ideas`. Add this mapping inside `autoload.psr-4` in `composer.json`, keeping the existing mappings and valid JSON commas:
-
-```json
-"Ideas\\": "modules/ideas/src/",
-```
-
-Add this entry to the existing array in `bootstrap/providers.php`, keeping the other providers:
-
-```php
-Ideas\Providers\IdeasServiceProvider::class,
-```
-
-Refresh Composer's autoload files after adding both entries:
-
-```sh
-composer dump-autoload
-```
-
-For the PHP edition, run the migration:
-
-```sh
-php artisan migrate
-```
-
-Rebuild the frontend:
-
-```sh
-npm run build
-```
-
-With your LARAVEL server running, visit `/ideas`. Start editing `modules/ideas/resources/js/NotesApp.jsx`; the generated module’s source is yours to change.
-
-Maiden Voyage edits are not transferred automatically into a generated kit. Download your edited component from the tour, then use its contents to replace `modules/ideas/resources/js/NotesApp.jsx` before building if you want to carry those changes over.
-
-## One connected development cycle
-
-**SLIPSTREAM → ZEFRAM → ARCHER → iterate.**
-
-- **SLIPSTREAM** provides the AI engineering path for building applications.
-- **ZEFRAM** provides the LARAVEL foundation, modules, and application conventions.
-- **ARCHER** is the installer and distribution manager being developed for the toolchain.
-
-All three also stand on their own. You can start directly from this repository with COMPOSER and NPM; using SLIPSTREAM or ARCHER is optional.
-
-ZEFRAM and ARCHER are in active development. ZEFRAM CLOUD is planned; managed hosting is not included in this repository.
+To generate a module with a SLIPSTREAM kit, see `/docs/slipstream-kits` or the [ZEFRAM README](https://github.com/Parallax-Web-Services/zefram#make-your-first-module). To install without COMPOSER or NPM, use [ARCHER](https://archer.zefram.tech).
 
 ## Development checks
-
-Run the checks relevant to your changes:
 
 ```sh
 composer run test
@@ -191,18 +122,12 @@ npm run test:js
 npm run build
 ```
 
-The frontend build produces the LARAVEL assets, the standalone browser preview, and the editable-code preview bundle.
-
-For framework features and APIs, use the [LARAVEL documentation](https://laravel.com/docs/13.x). The repository’s manifests and lockfiles define its dependency versions.
-
 ## Contributing
 
-Open an issue or pull request in this repository. Explain the problem, the resulting behavior, and how you verified your change. Keep new modules and kit changes consistent with the existing application.
+Open an issue or pull request. Explain the problem, the resulting behavior, and how you verified your change.
 
-## License and copyright
+## License
 
-ZEFRAM is MIT licensed, as declared in [composer.json](composer.json).
+Helm is open-source software licensed under the [MIT license](LICENSE).
 
-© Parallax Web Services, Inc.
-
-ZEFRAM is an unofficial LARAVEL distribution. LARAVEL and the other dependencies retain their respective copyright notices and licenses.
+The names and logos for Helm by Parallax, Parallax, ZEFRAM and Nexus are not covered by the MIT license. Helm by Parallax is not affiliated with Helm, the Kubernetes package manager, which is a trademark of The Linux Foundation.
