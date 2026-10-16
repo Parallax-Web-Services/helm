@@ -1,0 +1,28 @@
+name: Feature proposal
+description: Propose an improvement to HELM.
+title: "[Proposal] "
+body:
+  - type: markdown
+    attributes:
+      value: "HELM favors reusable, independently deployable components over dependencies on hosted Parallax services."
+  - type: textarea
+    id: use-case
+    attributes:
+      label: Developer need
+      description: "What are you building and what is difficult today?"
+    validations:
+      required: true
+  - type: textarea
+    id: proposed
+    attributes:
+      label: Proposed behavior
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives and compatibility considerations
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sketches, examples or references (optional)
