@@ -10,6 +10,12 @@ Helm by Parallax is the dashboard pattern Parallax builds its own apps with, rel
 
 Helm is a [ZEFRAM](https://github.com/Parallax-Web-Services/zefram) edition: **LARAVEL 13**, **INERTIA 3**, **REACT 19**, **TAILWIND 4** and **VITE 8**, with ZEFRAM's modules, SLIPSTREAM kits and Maiden Voyage included.
 
+## Why we're sharing this
+
+HELM grew out of interface work for Parallax's Slipstream and Continuum products. We're releasing the reusable command-deck patterns so developers can build on them without needing a commercial Parallax account or adopting the full platform.
+
+**Start with HELM alone:** local demo sign-in lets you explore the interface. **Add NEXUS later:** self-host the shared accounts and team layer when you need a suite of applications.
+
 ## What's included
 
 - **The shell**: a sidebar that becomes a drawer on small screens, a top bar, breadcrumbs, tabs and flash messages.
@@ -34,6 +40,12 @@ php artisan serve
 Open [http://127.0.0.1:8000](http://127.0.0.1:8000) and choose **Local dev sign-in**. It signs you in as a demo account with a small team, so every page has something to show. Local dev sign-in only exists when `APP_ENV=local`.
 
 For ongoing development, run `composer run dev` instead of `php artisan serve`.
+
+## Explore the interface
+
+After [local setup](#get-started), try `/dashboard` for the command deck, `/team` for team context, `/voyage` for Maiden Voyage and `/docs` for local documentation. `resources/js/helm.config.js` controls branding, navigation and workspace links.
+
+For a genuine UI recording and screenshot checklist, see [the showcase capture guide](docs/DEMO.md). We prefer real application screenshots to rendered promotional mockups.
 
 ## Connect Nexus
 
@@ -124,7 +136,9 @@ npm run build
 
 ## Contributing
 
-Open an issue or pull request. Explain the problem, the resulting behavior, and how you verified your change.
+Issues and pull requests are welcome. Follow the [contributor guide](CONTRIBUTING.md) for local setup, test commands and how to submit UI changes. For vulnerabilities, use the private reporting instructions in [SECURITY.md](SECURITY.md).
+
+A working two-app setup is documented in [the HELM + NEXUS integration guide](docs/INTEGRATION.md).
 
 ## License
 

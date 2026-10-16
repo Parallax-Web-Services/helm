@@ -1,0 +1,46 @@
+name: Bug report
+description: Report reproducible behavior in HELM.
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: "For security vulnerabilities, follow [SECURITY.md](../../SECURITY.md) instead. Never post tokens or private data here."
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Shell / navigation
+        - UI / deck components
+        - Local development sign-in
+        - NEXUS integration / teams
+        - Setup / build
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: "Start from a clean local checkout and list the steps..."
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      placeholder: "Commit/version; PHP, Node, browser, and OS where relevant"
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Sanitized logs or screenshots (optional)
+      description: "Remove credentials, personal data and production URLs."
